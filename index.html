@@ -4,8 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Install Tampermonkey</title>
-  <meta name="description" content="Automatically redirects to the right Tampermonkey install page for your browser." />
+  <meta name="description" content="Choose the correct Tampermonkey install page for your browser." />
   <style>
+    :root {
+      color-scheme: light;
+    }
     body {
       font-family: Arial, Helvetica, sans-serif;
       margin: 0;
@@ -16,7 +19,7 @@
       color: #1f2937;
     }
     .card {
-      max-width: 640px;
+      max-width: 720px;
       margin: 24px;
       padding: 28px;
       background: #ffffff;
@@ -24,13 +27,20 @@
       border-radius: 16px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.06);
     }
-    h1 { margin-top: 0; font-size: 28px; }
-    p { line-height: 1.6; }
-    .note {
-      padding: 12px 14px;
+    h1 {
+      margin: 0 0 10px;
+      font-size: 28px;
+    }
+    p {
+      line-height: 1.6;
+      margin: 10px 0;
+    }
+    .status {
+      margin-top: 16px;
+      padding: 14px 16px;
       background: #f3f4f6;
       border-radius: 10px;
-      font-size: 14px;
+      font-size: 15px;
       color: #374151;
       word-break: break-word;
     }
@@ -62,55 +72,93 @@
       padding: 2px 6px;
       border-radius: 6px;
     }
+    .countdown {
+      font-weight: 700;
+    }
   </style>
 </head>
 <body>
-  <div class="card">
+  <main class="card">
     <h1>Install Tampermonkey</h1>
-    <p>This page will try to send you to the right Tampermonkey install page for your browser automatically.</p>
+    <p>This page will suggest the best install path for your browser, but it will not force you away immediately.</p>
 
-    <div class="note" id="status">Detecting browser…</div>
+    <div class="status" id="status">
+      Detecting browser…
+    </div>
 
     <div class="links">
-      <a class="button" id="installLink" href="https://www.tampermonkey.net/" rel="noopener noreferrer">Open Tampermonkey</a>
+      <a class="button" id="installLink" href="https://www.tampermonkey.net/" rel="noopener noreferrer">Open install page</a>
       <a class="button secondary" href="https://www.tampermonkey.net/" rel="noopener noreferrer">Tampermonkey home</a>
     </div>
 
     <p class="small">
-      If redirect does not happen, click the button above or open the page manually.
+      If the browser is blocked or misdetected, use the button above. The page will try a redirect after a short delay.
     </p>
-  </div>
+  </main>
 
   <script>
     (function () {
-      const ua = navigator.userAgent;
-      let url = "https://www.tampermonkey.net/";
-      let browser = "your browser";
+      const ua = navigator.userAgent || "";
+      const status = document.getElementById("status");
+      const installLink = document.getElementById("installLink");
 
-      if (ua.includes("Firefox")) {
-        browser = "Firefox";
-        url = "https://addons.mozilla.org/firefox/addon/tampermonkey/";
-      } else if (ua.includes("Edg")) {
-        browser = "Microsoft Edge";
-        url = "https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd";
-      } else if (ua.includes("OPR") || ua.includes("Opera")) {
-        browser = "Opera";
-        url = "https://www.tampermonkey.net/";
-      } else if (ua.includes("Chrome") && !ua.includes("Edg") && !ua.includes("OPR")) {
-        browser = "Chrome";
-        url = "https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo";
-      } else if (ua.includes("Safari") && !ua.includes("Chrome")) {
-        browser = "Safari";
-        url = "https://www.tampermonkey.net/?browser=safari";
+      const pages = {
+        firefox: "https://addons.mozilla.org/firefox/addon/tampermonkey/",
+        edge: "https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd",
+        chrome: "https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo",
+        safari: "https://www.tampermonkey.net/?browser=safari",
+        default: "https://www.tampermonkey.net/"
+      };
+
+      let browserName = "your browser";
+      let url = pages.default;
+
+      if (/Firefox/i.test(ua)) {
+        browserName = "Firefox";
+        url = pages.firefox;
+      } else if (/Edg/i.test(ua)) {
+        browserName = "Microsoft Edge";
+        url = pages.edge;
+      } else if (/OPR|Opera/i.test(ua)) {
+        browserName = "Opera";
+        url = pages.default;
+      } else if (/Chrome/i.test(ua) && !/Edg|OPR/i.test(ua)) {
+        browserName = "Chrome";
+        url = pages.chrome;
+      } else if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) {
+        browserName = "Safari";
+        url = pages.safari;
       }
 
-      document.getElementById("status").textContent =
-        "Detected " + browser + ". Redirecting you now…";
-      document.getElementById("installLink").href = url;
+      installLink.href = url;
 
+      // Keep the page visible and wait before redirecting.
+      const delaySeconds = 5;
+      let remaining = delaySeconds;
+
+      status.innerHTML =
+        "Detected <strong>" + browserName + "</strong>. Redirecting in " +
+        "<span class='countdown' id='countdown'>" + remaining + "</span> seconds.";
+
+      const countdownEl = document.getElementById("countdown");
+
+      const timer = setInterval(function () {
+        remaining -= 1;
+        if (remaining <= 0) {
+          clearInterval(timer);
+          status.textContent = "Redirecting now.";
+          window.location.href = url;
+          return;
+        }
+        countdownEl.textContent = String(remaining);
+      }, 1000);
+
+      // Fallback for browsers that block or ignore timer-based redirects.
       setTimeout(function () {
-        window.location.href = url;
-      }, 800);
+        if (window.location.href !== url) {
+          window.location.href = url;
+        }
+      }, delaySeconds * 1000);
     })();
   </script>
 </body>
