@@ -3,7 +3,7 @@
 ## Install Tampermonkey
 
 1. Open the Tampermonkey install page:
-   - https://mcanderson14.github.io/SCM_SC_Tampermonkey_install_pgs/
+   - https://www.tampermonkey.net/
 
 2. Install the extension for your browser.
 
@@ -11,11 +11,9 @@
 
 ---
 
-# Required Browser & Tampermonkey Settings
+# Browser-Specific Setup Instructions
 
-After installing Tampermonkey, additional settings must be enabled before user scripts will function correctly.
-
-## Step 1 — Enable Developer Mode in Chrome
+## Google Chrome
 
 Open:
 
@@ -23,34 +21,116 @@ Open:
 chrome://extensions/
 ```
 
-In the top-right corner of the Extensions page:
+### Required Settings
 
 - Enable **Developer mode**
+- Open **Tampermonkey → Details**
+- Set:
+  - ✅ Allow User Scripts = ON
+  - ✅ Site Access = On all sites
+  - ✅ Allow access to file URLs = ON
 
 ---
 
-## Step 2 — Open Tampermonkey Details
+## Microsoft Edge
 
-1. Find **Tampermonkey** in the Extensions list
-2. Click **Details**
+Open:
 
----
-
-## Step 3 — Configure Required Settings
-
-The following settings MUST be enabled:
+```text
+edge://extensions/
+```
 
 ### Required Settings
 
-- ✅ Allow User Scripts = ON
-- ✅ Site Access = "On all sites"
-- ✅ Allow access to file URLs = ON
+- Enable **Developer mode**
+- Open **Tampermonkey → Details**
+- Set:
+  - ✅ Allow User Scripts = ON
+  - ✅ Site Access = On all sites
+  - ✅ Allow access to file URLs = ON
+
+> Microsoft Edge behaves almost identically to Chrome.
 
 ---
 
-# Example Configuration
+## Mozilla Firefox
 
-![Tampermonkey Settings](tampermonkey-settings.png)
+Open:
+
+```text
+about:addons
+```
+
+### Required Settings
+
+1. Open **Extensions**
+2. Select **Tampermonkey**
+3. Open **Preferences** or **Manage**
+
+Recommended:
+- Allow Tampermonkey to run on:
+  - All websites
+  - Private windows (if needed)
+- Ensure user scripts are enabled inside Tampermonkey settings
+
+> Firefox does not use Chrome-style "Developer mode."
+
+> Firefox handles local file access differently, so "Allow access to file URLs" is usually not required.
+
+---
+
+## Opera
+
+Open:
+
+```text
+opera://extensions
+```
+
+### Required Settings
+
+- Enable **Developer mode**
+- Open **Tampermonkey → Details**
+- Set:
+  - ✅ Allow User Scripts = ON
+  - ✅ Site Access = On all sites
+  - ✅ Allow access to file URLs = ON
+
+> Opera is Chromium-based and behaves similarly to Chrome.
+
+---
+
+## Safari
+
+### Open Safari Extension Settings
+
+1. Open Safari
+2. Go to:
+   - Safari → Settings
+3. Open:
+   - Extensions
+4. Select:
+   - Tampermonkey
+
+### Required Settings
+
+- Enable Tampermonkey
+- Allow access to:
+  - All Websites
+- Approve any requested permissions
+
+> Safari may require:
+> - Restarting Safari
+> - Approving permissions under macOS Privacy & Security
+
+---
+
+# Example Chrome Configuration
+
+The following screenshot shows the recommended Chrome configuration.
+
+<img width="1911" height="994" alt="image" src="https://github.com/user-attachments/assets/332a31bb-31e8-491b-b837-0f24e89a37b3" />
+
 
 ---
 
@@ -60,10 +140,10 @@ The following settings MUST be enabled:
 
 Verify:
 
-- Developer mode is enabled
+- Developer mode is enabled (Chromium browsers)
 - User Scripts are allowed
 - Site Access is set to "On all sites"
-- Access to file URLs is enabled
+- Access to file URLs is enabled (Chromium browsers)
 
 ## Browser Compatibility
 
@@ -86,3 +166,4 @@ After setup:
 - Pin the Tampermonkey extension to the toolbar
 - Restart the browser
 - Re-open the target application/site
+- Refresh the browser tab after installing scripts
