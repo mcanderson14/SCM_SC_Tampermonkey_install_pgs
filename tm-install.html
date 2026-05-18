@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Install Tampermonkey</title>
+  <meta name="description" content="Automatically redirects to the right Tampermonkey install page for your browser." />
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #f6f8fb;
+      color: #1f2937;
+    }
+    .card {
+      max-width: 640px;
+      margin: 24px;
+      padding: 28px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    }
+    h1 { margin-top: 0; font-size: 28px; }
+    p { line-height: 1.6; }
+    .note {
+      padding: 12px 14px;
+      background: #f3f4f6;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #374151;
+      word-break: break-word;
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    a.button {
+      display: inline-block;
+      padding: 12px 16px;
+      border-radius: 10px;
+      text-decoration: none;
+      color: white;
+      background: #2563eb;
+      font-weight: 600;
+    }
+    a.button.secondary {
+      background: #4b5563;
+    }
+    .small {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 16px;
+    }
+    code {
+      background: #eef2ff;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Install Tampermonkey</h1>
+    <p>This page will try to send you to the right Tampermonkey install page for your browser automatically.</p>
+
+    <div class="note" id="status">Detecting browser…</div>
+
+    <div class="links">
+      <a class="button" id="installLink" href="https://www.tampermonkey.net/" rel="noopener noreferrer">Open Tampermonkey</a>
+      <a class="button secondary" href="https://www.tampermonkey.net/" rel="noopener noreferrer">Tampermonkey home</a>
+    </div>
+
+    <p class="small">
+      If redirect does not happen, click the button above or open the page manually.
+    </p>
+  </div>
+
+  <script>
+    (function () {
+      const ua = navigator.userAgent;
+      let url = "https://www.tampermonkey.net/";
+      let browser = "your browser";
+
+      if (ua.includes("Firefox")) {
+        browser = "Firefox";
+        url = "https://addons.mozilla.org/firefox/addon/tampermonkey/";
+      } else if (ua.includes("Edg")) {
+        browser = "Microsoft Edge";
+        url = "https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd";
+      } else if (ua.includes("OPR") || ua.includes("Opera")) {
+        browser = "Opera";
+        url = "https://www.tampermonkey.net/";
+      } else if (ua.includes("Chrome") && !ua.includes("Edg") && !ua.includes("OPR")) {
+        browser = "Chrome";
+        url = "https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo";
+      } else if (ua.includes("Safari") && !ua.includes("Chrome")) {
+        browser = "Safari";
+        url = "https://www.tampermonkey.net/?browser=safari";
+      }
+
+      document.getElementById("status").textContent =
+        "Detected " + browser + ". Redirecting you now…";
+      document.getElementById("installLink").href = url;
+
+      setTimeout(function () {
+        window.location.href = url;
+      }, 800);
+    })();
+  </script>
+</body>
+</html>
