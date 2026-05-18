@@ -3,7 +3,7 @@
 ## Install Tampermonkey
 
 1. Open the Tampermonkey install page:
-   - https://www.tampermonkey.net/
+   - https://mcanderson14.github.io/SCM_SC_Tampermonkey_install_pgs/
 
 2. Install the extension for your browser.
 
